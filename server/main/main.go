@@ -1,26 +1,38 @@
 package main
 
 import (
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	migrations "university-management-golang/db"
 	"university-management-golang/db/connection"
 	um "university-management-golang/protoclient/university_management"
 	"university-management-golang/server/internal/handlers"
+
+	"google.golang.org/grpc"
 )
 
 const port = "2345"
 
+type Department struct {
+	ID   int64  `db:"id"`
+	Name string `db:"name"`
+}
+
+type Student struct {
+	ID           int64  `db:"id"`
+	Name         string `db:"name"`
+	RollNo       string `db:"roll_no"`
+	DepartmentId int64  `db:"department_id"`
+}
 
 //db
 const (
 	username = "postgres"
 	password = "admin"
-	host = "localhost"
+	host     = "localhost"
 	dbPort   = "5436"
-	dbName = "postgres"
-	schema = "public"
+	dbName   = "postgres"
+	schema   = "public"
 )
 
 func main() {
@@ -30,13 +42,13 @@ func main() {
 	}
 
 	connectionmanager := &connection.DatabaseConnectionManagerImpl{
-			&connection.DBConfig{
-				host,dbPort,username,password,dbName,schema,
-			},
-			nil,
+		&connection.DBConfig{
+			host, dbPort, username, password, dbName, schema,
+		},
+		nil,
 	}
 
-	//insertSeedData(connectionmanager)
+	// insertSeedData(connectionmanager)
 
 	grpcServer := grpc.NewServer()
 	lis, err := net.Listen("tcp", ":"+port)
@@ -60,17 +72,35 @@ func insertSeedData(connectionManager connection.DatabaseConnectionManager) {
 	}
 
 	log.Println("Cleaning up department table")
-	_, err = connection.GetSession().DeleteFrom("department").Exec()
+	_, err = connection.GetSession().DeleteFrom("departments").Exec()
 	if err != nil {
 		log.Fatalf("Could not delete from department table. Err: %+v", err)
 	}
 
-	log.Println("Inserting into department table")
-	_, err = connection.GetSession().InsertInto("department").Columns("name").
-		Values("Computer Science").Exec()
+	log.Println("Cleaning up students table")
+	_, err = connection.GetSession().DeleteFrom("students").Exec()
+	if err != nil {
+		log.Fatalf("Could not delete from students table. Err: %+v", err)
+	}
+
+	log.Println("Inserting into departments table")
+	departmentData := &Department{
+		ID:   2,
+		Name: "Computer Science",
+	}
+	_, err = connection.GetSession().InsertInto("departments").Columns("id", "name").Record(departmentData).Exec()
+
+	log.Println("Inserting into students table")
+	studentData := &Student{
+		Name:         "Mathi",
+		RollNo:       "12345",
+		DepartmentId: 2,
+		ID:           2,
+	}
+	_, err = connection.GetSession().InsertInto("students").Columns("id", "name", "roll_no", "department_id").Record(studentData).Exec()
 
 	if err != nil {
-		log.Fatalf("Could not insert into department table. Err: %+v", err)
+		log.Fatalf("Could not insert into departments table. Err: %+v", err)
 	}
 
 	defer connectionManager.CloseConnection()
