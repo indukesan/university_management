@@ -48,7 +48,7 @@ func main() {
 		nil,
 	}
 
-	// insertSeedData(connectionmanager)
+	insertSeedData(connectionmanager)
 
 	grpcServer := grpc.NewServer()
 	lis, err := net.Listen("tcp", ":"+port)
@@ -71,36 +71,61 @@ func insertSeedData(connectionManager connection.DatabaseConnectionManager) {
 		log.Fatalf("Error: %+v", err)
 	}
 
-	log.Println("Cleaning up department table")
-	_, err = connection.GetSession().DeleteFrom("departments").Exec()
-	if err != nil {
-		log.Fatalf("Could not delete from department table. Err: %+v", err)
-	}
-
 	log.Println("Cleaning up students table")
 	_, err = connection.GetSession().DeleteFrom("students").Exec()
 	if err != nil {
 		log.Fatalf("Could not delete from students table. Err: %+v", err)
 	}
 
+	log.Println("Cleaning up departments_staffs table")
+	_, err = connection.GetSession().DeleteFrom("departments_staffs").Exec()
+	if err != nil {
+		log.Fatalf("Could not delete from departments_staffs table. Err: %+v", err)
+	}
+
+	log.Println("Cleaning up departments table")
+	_, err = connection.GetSession().DeleteFrom("departments").Exec()
+	if err != nil {
+		log.Fatalf("Could not delete from departments table. Err: %+v", err)
+	}
+
+	log.Println("Cleaning up staffs table")
+	_, err = connection.GetSession().DeleteFrom("staffs").Exec()
+	if err != nil {
+		log.Fatalf("Could not delete from staffs table. Err: %+v", err)
+	}
+
 	log.Println("Inserting into departments table")
-	departmentData := &Department{
-		ID:   2,
-		Name: "Computer Science",
-	}
-	_, err = connection.GetSession().InsertInto("departments").Columns("id", "name").Record(departmentData).Exec()
-
-	log.Println("Inserting into students table")
-	studentData := &Student{
-		Name:         "Mathi",
-		RollNo:       "12345",
-		DepartmentId: 2,
-		ID:           2,
-	}
-	_, err = connection.GetSession().InsertInto("students").Columns("id", "name", "roll_no", "department_id").Record(studentData).Exec()
-
+	_, err = connection.GetSession().InsertInto("departments").Columns("name").Values("Computer Science").Exec()
+	_, err = connection.GetSession().InsertInto("departments").Columns("name").Values("DLC").Exec()
+	_, err = connection.GetSession().InsertInto("departments").Columns("name").Values("LIC").Exec()
 	if err != nil {
 		log.Fatalf("Could not insert into departments table. Err: %+v", err)
+	}
+
+	log.Println("Inserting into students table")
+	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("Vaishnavi", 34567, 7).Exec()
+	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("Vaishnavi", 12345, 8).Exec()
+	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("Vaishnavi", 67890, 9).Exec()
+	if err != nil {
+		log.Fatalf("Could not insert into students table. Err: %+v", err)
+	}
+
+	log.Println("Inserting into staffs table")
+	_, err = connection.GetSession().InsertInto("staffs").Columns("name").Values("Rajesh").Exec()
+	_, err = connection.GetSession().InsertInto("staffs").Columns("name").Values("Raj").Exec()
+	_, err = connection.GetSession().InsertInto("staffs").Columns("name").Values("Rakesh").Exec()
+	if err != nil {
+		log.Fatalf("Could not insert into staffs table. Err: %+v", err)
+	}
+
+	log.Println("Inserting into departments_staffs table")
+
+	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(7, 7).Exec()
+	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(8, 7).Exec()
+	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(9, 9).Exec()
+	if err != nil {
+		log.Fatalf("Could not insert into departments_staffs table. Err: %+v", err)
 	}
 
 	defer connectionManager.CloseConnection()

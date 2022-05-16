@@ -63,7 +63,7 @@ func (u *universityManagementServer) GetStudent(ctx context.Context, request *um
 
 func (u *universityManagementServer) GetStudents(ctx context.Context, request *um.GetStudentsRequest) (*um.GetStudentsResponse, error) {
 	connection, err := u.connectionManager.GetConnection()
-	defer u.connectionManager.CloseConnection()
+	// defer u.connectionManager.CloseConnection()
 
 	if err != nil {
 		log.Fatalf("Error: %+v", err)
@@ -89,6 +89,32 @@ func (u *universityManagementServer) GetStudents(ctx context.Context, request *u
 		students = append(students, &newStudent)
 	}
 	return &um.GetStudentsResponse{Student: students}, nil
+}
+
+func (u *universityManagementServer) GetStaffsForStudent(ctx context.Context, request *um.GetStaffsForStudentRequest) (*um.GetStaffsForStudentResponse, error) {
+	connection, err := u.connectionManager.GetConnection()
+	defer u.connectionManager.CloseConnection()
+
+	if err != nil {
+		log.Fatalf("Error: %+v", err)
+	}
+
+	var tempStaffs []um.Staff
+	connection.GetSession().Select("staffs.name").From("students").Join("departments", "students.department_id = departments.id").Join("departments_staffs", "departments.id = departments_staffs.department_id").Join("staffs", "departments_staffs.staff_id = staffs.id").Where("students.roll_no = ?", request.GetRollNo()).Load(&tempStaffs)
+	_, err = json.Marshal(&tempStaffs)
+	if err != nil {
+		log.Fatalf("Error while marshaling %+v", err)
+	}
+
+	var staffs []*um.Staff
+	for _, staff := range tempStaffs {
+		newStaff := um.Staff{
+			Id:   staff.Id,
+			Name: staff.Name,
+		}
+		staffs = append(staffs, &newStaff)
+	}
+	return &um.GetStaffsForStudentResponse{Staff: staffs}, nil
 }
 
 func NewUniversityManagementHandler(connectionmanager connection.DatabaseConnectionManager) um.UniversityManagementServiceServer {

@@ -13,8 +13,13 @@ message Department {
 message Student {
   int32 id = 1;
   string name = 2;
-  string rollNo = 3;
+  int32 rollNo = 3;
   int32 departmentId = 4;
+}
+
+message Staff {
+  int32 id = 1;
+  string name = 2;
 }
 
 message GetDepartmentRequest {
@@ -40,6 +45,14 @@ message GetStudentsResponse {
   repeated Student student = 1;
 }
 
+message GetStaffsForStudentRequest {
+  int32 rollNo = 1;
+}
+
+message GetStaffsForStudentResponse {
+  repeated Staff staff = 1;
+}
+
 service UniversityManagementService {
   rpc GetDepartment (GetDepartmentRequest) returns (GetDepartmentResponse) {
   }
@@ -48,5 +61,8 @@ service UniversityManagementService {
   }
 
   rpc GetStudent (GetStudentRequest) returns (GetStudentResponse) {
+  }
+
+  rpc GetStaffsForStudent (GetStaffsForStudentRequest) returns (GetStaffsForStudentResponse) {
   }
 }

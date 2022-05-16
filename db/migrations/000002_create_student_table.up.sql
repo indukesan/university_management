@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS students (
-    id bigint NOT NULL,
+    id serial PRIMARY KEY,
     name text,
-    roll_no text,
-    department_id bigint
+    roll_no bigint,
+    department_id integer REFERENCES departments(id)
 );

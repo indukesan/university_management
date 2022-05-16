@@ -32,11 +32,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error occured while fetching student for department id %d,err: %+v", departmentID, err)
 	}
-	log.Println("main stud", studentResponse)
+	log.Println(studentResponse)
 
 	studentsResponse, err := client.GetStudents(context.TODO(), &university_management.GetStudentsRequest{DepartmentId: departmentID})
 	if err != nil {
 		log.Fatalf("Error occured while fetching student for department id %d,err: %+v", departmentID, err)
 	}
-	log.Println("main stud", studentsResponse)
+	log.Println(studentsResponse)
+
+	var rollNo int32 = 34567
+	staffsForStudentResponse, err := client.GetStaffsForStudent(context.TODO(), &university_management.GetStaffsForStudentRequest{RollNo: rollNo})
+	if err != nil {
+		log.Fatalf("Error occured while fetching staffs for student rollNo %d,err: %+v", rollNo, err)
+	}
+	log.Println(staffsForStudentResponse)
 }
