@@ -48,7 +48,7 @@ func main() {
 		nil,
 	}
 
-	insertSeedData(connectionmanager)
+	// insertSeedData(connectionmanager)
 
 	grpcServer := grpc.NewServer()
 	lis, err := net.Listen("tcp", ":"+port)
@@ -104,9 +104,9 @@ func insertSeedData(connectionManager connection.DatabaseConnectionManager) {
 	}
 
 	log.Println("Inserting into students table")
-	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("Vaishnavi", 34567, 7).Exec()
-	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("Vaishnavi", 12345, 8).Exec()
-	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("Vaishnavi", 67890, 9).Exec()
+	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("Vaishnavi", 34567, 1).Exec()
+	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("Lulu", 12345, 2).Exec()
+	_, err = connection.GetSession().InsertInto("students").Columns("name", "roll_no", "department_id").Values("ABC", 67890, 3).Exec()
 	if err != nil {
 		log.Fatalf("Could not insert into students table. Err: %+v", err)
 	}
@@ -121,9 +121,9 @@ func insertSeedData(connectionManager connection.DatabaseConnectionManager) {
 
 	log.Println("Inserting into departments_staffs table")
 
-	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(7, 7).Exec()
-	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(8, 7).Exec()
-	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(9, 9).Exec()
+	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(1, 1).Exec()
+	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(1, 2).Exec()
+	_, err = connection.GetSession().InsertInto("departments_staffs").Columns("department_id", "staff_id").Values(3, 3).Exec()
 	if err != nil {
 		log.Fatalf("Could not insert into departments_staffs table. Err: %+v", err)
 	}

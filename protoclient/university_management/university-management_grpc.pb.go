@@ -22,6 +22,8 @@ type UniversityManagementServiceClient interface {
 	GetStudents(ctx context.Context, in *GetStudentsRequest, opts ...grpc.CallOption) (*GetStudentsResponse, error)
 	GetStudent(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*GetStudentResponse, error)
 	GetStaffsForStudent(ctx context.Context, in *GetStaffsForStudentRequest, opts ...grpc.CallOption) (*GetStaffsForStudentResponse, error)
+	GetLoginForStudent(ctx context.Context, in *GetRequestForLogin, opts ...grpc.CallOption) (*GetResponseForLogin, error)
+	GetLogoutForStudent(ctx context.Context, in *GetRequestForLogout, opts ...grpc.CallOption) (*GetResponseForLogout, error)
 }
 
 type universityManagementServiceClient struct {
@@ -68,6 +70,24 @@ func (c *universityManagementServiceClient) GetStaffsForStudent(ctx context.Cont
 	return out, nil
 }
 
+func (c *universityManagementServiceClient) GetLoginForStudent(ctx context.Context, in *GetRequestForLogin, opts ...grpc.CallOption) (*GetResponseForLogin, error) {
+	out := new(GetResponseForLogin)
+	err := c.cc.Invoke(ctx, "/university_management.UniversityManagementService/GetLoginForStudent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *universityManagementServiceClient) GetLogoutForStudent(ctx context.Context, in *GetRequestForLogout, opts ...grpc.CallOption) (*GetResponseForLogout, error) {
+	out := new(GetResponseForLogout)
+	err := c.cc.Invoke(ctx, "/university_management.UniversityManagementService/GetLogoutForStudent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UniversityManagementServiceServer is the server API for UniversityManagementService service.
 // All implementations must embed UnimplementedUniversityManagementServiceServer
 // for forward compatibility
@@ -76,6 +96,8 @@ type UniversityManagementServiceServer interface {
 	GetStudents(context.Context, *GetStudentsRequest) (*GetStudentsResponse, error)
 	GetStudent(context.Context, *GetStudentRequest) (*GetStudentResponse, error)
 	GetStaffsForStudent(context.Context, *GetStaffsForStudentRequest) (*GetStaffsForStudentResponse, error)
+	GetLoginForStudent(context.Context, *GetRequestForLogin) (*GetResponseForLogin, error)
+	GetLogoutForStudent(context.Context, *GetRequestForLogout) (*GetResponseForLogout, error)
 	mustEmbedUnimplementedUniversityManagementServiceServer()
 }
 
@@ -94,6 +116,12 @@ func (UnimplementedUniversityManagementServiceServer) GetStudent(context.Context
 }
 func (UnimplementedUniversityManagementServiceServer) GetStaffsForStudent(context.Context, *GetStaffsForStudentRequest) (*GetStaffsForStudentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStaffsForStudent not implemented")
+}
+func (UnimplementedUniversityManagementServiceServer) GetLoginForStudent(context.Context, *GetRequestForLogin) (*GetResponseForLogin, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLoginForStudent not implemented")
+}
+func (UnimplementedUniversityManagementServiceServer) GetLogoutForStudent(context.Context, *GetRequestForLogout) (*GetResponseForLogout, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLogoutForStudent not implemented")
 }
 func (UnimplementedUniversityManagementServiceServer) mustEmbedUnimplementedUniversityManagementServiceServer() {
 }
@@ -181,6 +209,42 @@ func _UniversityManagementService_GetStaffsForStudent_Handler(srv interface{}, c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UniversityManagementService_GetLoginForStudent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequestForLogin)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UniversityManagementServiceServer).GetLoginForStudent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/university_management.UniversityManagementService/GetLoginForStudent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UniversityManagementServiceServer).GetLoginForStudent(ctx, req.(*GetRequestForLogin))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UniversityManagementService_GetLogoutForStudent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequestForLogout)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UniversityManagementServiceServer).GetLogoutForStudent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/university_management.UniversityManagementService/GetLogoutForStudent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UniversityManagementServiceServer).GetLogoutForStudent(ctx, req.(*GetRequestForLogout))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UniversityManagementService_ServiceDesc is the grpc.ServiceDesc for UniversityManagementService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -203,6 +267,14 @@ var UniversityManagementService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStaffsForStudent",
 			Handler:    _UniversityManagementService_GetStaffsForStudent_Handler,
+		},
+		{
+			MethodName: "GetLoginForStudent",
+			Handler:    _UniversityManagementService_GetLoginForStudent_Handler,
+		},
+		{
+			MethodName: "GetLogoutForStudent",
+			Handler:    _UniversityManagementService_GetLogoutForStudent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

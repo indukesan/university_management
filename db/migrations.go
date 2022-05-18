@@ -8,6 +8,8 @@
 // db/migrations/000003_create_staff_table.up.sql
 // db/migrations/000004_create_department_staff_table.down.sql
 // db/migrations/000004_create_department_staff_table.up.sql
+// db/migrations/000005_create_attendance_table.down.sql
+// db/migrations/000005_create_attendance_table.up.sql
 
 package migrations
 
@@ -287,7 +289,7 @@ func bindata000004createdepartmentstafftableDownSql() (*asset, error) {
 		size: 40,
 		md5checksum: "",
 		mode: os.FileMode(420),
-		modTime: time.Unix(1652683685, 0),
+		modTime: time.Unix(1652783338, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -318,6 +320,66 @@ func bindata000004createdepartmentstafftableUpSql() (*asset, error) {
 		md5checksum: "",
 		mode: os.FileMode(420),
 		modTime: time.Unix(1652683699, 0),
+	}
+
+	a := &asset{bytes: bytes, info: info}
+
+	return a, nil
+}
+
+var _bindata000005createattendancetableDownSql = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x72\x09\xf2\x0f\x50\x08\x71\x74\xf2\x71\x55\xf0\x74\x53\x70\x8d\xf0\x0c\x0e\x09\x56\x48\x2c\x29\x49\xcd\x4b\x49\xcc\x4b\x4e\x2d\xb6\x06\x04\x00\x00\xff\xff\x36\xbe\x83\x27\x21\x00\x00\x00")
+
+func bindata000005createattendancetableDownSqlBytes() ([]byte, error) {
+	return bindataRead(
+		_bindata000005createattendancetableDownSql,
+		"000005_create_attendance_table.down.sql",
+	)
+}
+
+
+
+func bindata000005createattendancetableDownSql() (*asset, error) {
+	bytes, err := bindata000005createattendancetableDownSqlBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{
+		name: "000005_create_attendance_table.down.sql",
+		size: 33,
+		md5checksum: "",
+		mode: os.FileMode(420),
+		modTime: time.Unix(1652786758, 0),
+	}
+
+	a := &asset{bytes: bytes, info: info}
+
+	return a, nil
+}
+
+var _bindata000005createattendancetableUpSql = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x64\xcd\xb1\x4e\x85\x30\x14\x87\xf1\x99\x3e\xc5\x7f\x84\x84\x37\x70\xaa\xe4\x60\x4e\x84\x42\x4e\xcf\x20\x13\x21\xb6\x9a\x46\x2d\x03\xe5\xfd\x0d\xd1\x9b\x3b\xdc\xf5\x1b\xbe\x5f\x27\x64\x95\xa0\xf6\x79\x20\x70\x0f\x37\x29\xe8\x8d\xbd\x7a\x6c\xa5\xc4\x1c\xb6\xfc\x1e\x0f\xd4\xa6\x4a\x01\x9e\x84\xed\x80\x59\x78\xb4\xb2\xe0\x95\x96\xd6\x00\xc0\x51\xce\x10\x73\x59\x53\x00\x3b\x6d\x4d\xf5\xbd\x7f\xa6\xbc\x96\xf4\x13\xa1\x3c\x92\x57\x3b\xce\x7f\x79\x3f\xcb\x43\xbf\x16\xdd\xe4\xbc\x8a\x65\xa7\xf8\xf8\x5a\xff\x87\xe8\x27\x21\x7e\x71\x97\x54\xdf\x91\x06\x42\x3d\x09\xb9\x8e\xfc\xcd\x3e\xea\x14\x1a\xd3\x3c\xfd\x06\x00\x00\xff\xff\xf2\xb2\x62\x3f\xd0\x00\x00\x00")
+
+func bindata000005createattendancetableUpSqlBytes() ([]byte, error) {
+	return bindataRead(
+		_bindata000005createattendancetableUpSql,
+		"000005_create_attendance_table.up.sql",
+	)
+}
+
+
+
+func bindata000005createattendancetableUpSql() (*asset, error) {
+	bytes, err := bindata000005createattendancetableUpSqlBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	info := bindataFileInfo{
+		name: "000005_create_attendance_table.up.sql",
+		size: 208,
+		md5checksum: "",
+		mode: os.FileMode(420),
+		modTime: time.Unix(1652787467, 0),
 	}
 
 	a := &asset{bytes: bytes, info: info}
@@ -397,6 +459,8 @@ var _bindata = map[string]func() (*asset, error){
 	"000003_create_staff_table.up.sql":              bindata000003createstafftableUpSql,
 	"000004_create_department_staff_table.down.sql": bindata000004createdepartmentstafftableDownSql,
 	"000004_create_department_staff_table.up.sql":   bindata000004createdepartmentstafftableUpSql,
+	"000005_create_attendance_table.down.sql":       bindata000005createattendancetableDownSql,
+	"000005_create_attendance_table.up.sql":         bindata000005createattendancetableUpSql,
 }
 
 //
@@ -459,6 +523,8 @@ var _bintree = &bintree{Func: nil, Children: map[string]*bintree{
 	"000003_create_staff_table.up.sql": {Func: bindata000003createstafftableUpSql, Children: map[string]*bintree{}},
 	"000004_create_department_staff_table.down.sql": {Func: bindata000004createdepartmentstafftableDownSql, Children: map[string]*bintree{}},
 	"000004_create_department_staff_table.up.sql": {Func: bindata000004createdepartmentstafftableUpSql, Children: map[string]*bintree{}},
+	"000005_create_attendance_table.down.sql": {Func: bindata000005createattendancetableDownSql, Children: map[string]*bintree{}},
+	"000005_create_attendance_table.up.sql": {Func: bindata000005createattendancetableUpSql, Children: map[string]*bintree{}},
 }}
 
 // RestoreAsset restores an asset under the given directory

@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 //import "google/protobuf/struct.proto";
+// import "google/protobuf/timestamp.proto";
 package university_management;
 
 option go_package = "/university_management";
@@ -20,6 +21,13 @@ message Student {
 message Staff {
   int32 id = 1;
   string name = 2;
+}
+
+message Attendance {
+  int32 id = 1;
+  int32 studentId =2;
+  string loginTime = 3;
+  string logoutTime = 4;
 }
 
 message GetDepartmentRequest {
@@ -53,6 +61,22 @@ message GetStaffsForStudentResponse {
   repeated Staff staff = 1;
 }
 
+message GetRequestForLogin {
+  int32 studentId = 1;
+}
+
+message GetRequestForLogout {
+  Attendance attendance = 1;
+}
+
+message GetResponseForLogin {
+  string loginTime = 1;
+}
+
+message GetResponseForLogout {
+  string logoutTime = 1;
+}
+
 service UniversityManagementService {
   rpc GetDepartment (GetDepartmentRequest) returns (GetDepartmentResponse) {
   }
@@ -64,5 +88,11 @@ service UniversityManagementService {
   }
 
   rpc GetStaffsForStudent (GetStaffsForStudentRequest) returns (GetStaffsForStudentResponse) {
+  }
+
+  rpc GetLoginForStudent (GetRequestForLogin) returns (GetResponseForLogin) {
+  }
+
+  rpc GetLogoutForStudent (GetRequestForLogout) returns (GetResponseForLogout) {
   }
 }

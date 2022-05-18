@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("Error occured %+v", err)
 	}
 	client := university_management.NewUniversityManagementServiceClient(conn)
-	var departmentID int32 = 1
+	var departmentID int32 = 7
 	departmentResponse, err := client.GetDepartment(context.TODO(), &university_management.GetDepartmentRequest{Id: departmentID})
 	if err != nil {
 		log.Fatalf("Error occured while fetching department for id %d,err: %+v", departmentID, err)
@@ -46,4 +46,24 @@ func main() {
 		log.Fatalf("Error occured while fetching staffs for student rollNo %d,err: %+v", rollNo, err)
 	}
 	log.Println(staffsForStudentResponse)
+
+	var studentId int32 = 5
+	loginResponse, err := client.GetLoginForStudent(context.TODO(), &university_management.GetRequestForLogin{StudentId: studentId})
+	if err != nil {
+		log.Fatalf("Error occured while fetching login for student %d,err: %+v", 5, err)
+	}
+	log.Println(loginResponse)
+
+	attendance := university_management.Attendance{
+		Id:        32,
+		StudentId: studentId,
+		LoginTime: loginResponse.GetLoginTime(),
+		// LoginTime: "2022-05-18T07:04:19.301082Z",
+		LogoutTime: "",
+	}
+	logoutResponse, err := client.GetLogoutForStudent(context.TODO(), &university_management.GetRequestForLogout{Attendance: &attendance})
+	if err != nil {
+		log.Fatalf("Error occured while fetching logout for student %d,err: %+v", attendance.GetStudentId(), err)
+	}
+	log.Println(logoutResponse)
 }
