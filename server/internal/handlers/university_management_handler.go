@@ -190,13 +190,13 @@ func (u *universityManagementServer) Notify(ctx context.Context, request *um.Get
 }
 
 func getIds(ids []int32) string {
-	var emp []string
+	var temp []string
 	for _, rn := range ids {
 		v := fmt.Sprintf("%d", rn)
-		emp = append(emp, v)
+		temp = append(temp, v)
 	}
 	buf := bytes.NewBufferString("SELECT student_id FROM attendances WHERE student_id IN(")
-	for i, v := range emp {
+	for i, v := range temp {
 		if i > 0 {
 			buf.WriteString(",")
 		}
