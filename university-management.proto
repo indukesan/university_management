@@ -77,6 +77,14 @@ message GetResponseForLogout {
   string logoutTime = 1;
 }
 
+message GetLoginNotifyRequest{
+  repeated int32 studentIds = 1;
+}
+
+message GetLoginNotifyResponse{
+  string message = 1;
+}
+
 service UniversityManagementService {
   rpc GetDepartment (GetDepartmentRequest) returns (GetDepartmentResponse) {
   }
@@ -94,5 +102,8 @@ service UniversityManagementService {
   }
 
   rpc GetLogoutForStudent (GetRequestForLogout) returns (GetResponseForLogout) {
+  }
+
+  rpc Notify(GetLoginNotifyRequest) returns (GetLoginNotifyResponse) {
   }
 }

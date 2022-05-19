@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 	"university-management-golang/db/connection"
 	um "university-management-golang/protoclient/university_management"
@@ -154,4 +156,55 @@ func NewUniversityManagementHandler(connectionmanager connection.DatabaseConnect
 	return &universityManagementServer{
 		connectionManager: connectionmanager,
 	}
+}
+
+func (u *universityManagementServer) Notify(ctx context.Context, request *um.GetLoginNotifyRequest) (*um.GetLoginNotifyResponse, error) {
+
+	var channel = make(chan string)
+	go func() {
+		connection, err := u.connectionManager.GetConnection()
+
+		if err != nil {
+			log.Fatalf("Error: %+v", err)
+		}
+
+		for {
+			var studentId int32
+			ids := request.GetStudentIds()
+			fmt.Println(ids)
+			if len(ids) != 0 {
+				// connection.GetSession().Select("student_id").From("attendances").Where("student_id IN (?)", ids).LoadOne(&studentId)
+				// connection.GetSession().Select("student_id").From("attendances").Where("student_id ANY($1::int[])", ids).LoadOne(&studentId)
+				connection.GetSession().SelectBySql(getIds(ids)).LoadOne(&studentId)
+			} else {
+				connection.GetSession().Select("student_id").From("attendances").LoadOne(&studentId)
+			}
+			if studentId != 0 {
+				channel <- fmt.Sprintf("%d logged in!", studentId)
+				break
+			}
+		}
+	}()
+
+	return &um.GetLoginNotifyResponse{Message: <-channel}, nil
+}
+
+func getIds(ids []int32) string {
+	var emp []string
+	for _, rn := range ids {
+		v := fmt.Sprintf("%d", rn)
+		emp = append(emp, v)
+	}
+	buf := bytes.NewBufferString("SELECT student_id FROM attendances WHERE student_id IN(")
+	for i, v := range emp {
+		if i > 0 {
+			buf.WriteString(",")
+		}
+		if _, err := strconv.Atoi(v); err != nil {
+			panic("Not number!")
+		}
+		buf.WriteString(string(v))
+	}
+	buf.WriteString(")")
+	return buf.String()
 }

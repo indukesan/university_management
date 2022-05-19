@@ -24,6 +24,7 @@ type UniversityManagementServiceClient interface {
 	GetStaffsForStudent(ctx context.Context, in *GetStaffsForStudentRequest, opts ...grpc.CallOption) (*GetStaffsForStudentResponse, error)
 	GetLoginForStudent(ctx context.Context, in *GetRequestForLogin, opts ...grpc.CallOption) (*GetResponseForLogin, error)
 	GetLogoutForStudent(ctx context.Context, in *GetRequestForLogout, opts ...grpc.CallOption) (*GetResponseForLogout, error)
+	Notify(ctx context.Context, in *GetLoginNotifyRequest, opts ...grpc.CallOption) (*GetLoginNotifyResponse, error)
 }
 
 type universityManagementServiceClient struct {
@@ -88,6 +89,15 @@ func (c *universityManagementServiceClient) GetLogoutForStudent(ctx context.Cont
 	return out, nil
 }
 
+func (c *universityManagementServiceClient) Notify(ctx context.Context, in *GetLoginNotifyRequest, opts ...grpc.CallOption) (*GetLoginNotifyResponse, error) {
+	out := new(GetLoginNotifyResponse)
+	err := c.cc.Invoke(ctx, "/university_management.UniversityManagementService/Notify", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UniversityManagementServiceServer is the server API for UniversityManagementService service.
 // All implementations must embed UnimplementedUniversityManagementServiceServer
 // for forward compatibility
@@ -98,6 +108,7 @@ type UniversityManagementServiceServer interface {
 	GetStaffsForStudent(context.Context, *GetStaffsForStudentRequest) (*GetStaffsForStudentResponse, error)
 	GetLoginForStudent(context.Context, *GetRequestForLogin) (*GetResponseForLogin, error)
 	GetLogoutForStudent(context.Context, *GetRequestForLogout) (*GetResponseForLogout, error)
+	Notify(context.Context, *GetLoginNotifyRequest) (*GetLoginNotifyResponse, error)
 	mustEmbedUnimplementedUniversityManagementServiceServer()
 }
 
@@ -122,6 +133,9 @@ func (UnimplementedUniversityManagementServiceServer) GetLoginForStudent(context
 }
 func (UnimplementedUniversityManagementServiceServer) GetLogoutForStudent(context.Context, *GetRequestForLogout) (*GetResponseForLogout, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLogoutForStudent not implemented")
+}
+func (UnimplementedUniversityManagementServiceServer) Notify(context.Context, *GetLoginNotifyRequest) (*GetLoginNotifyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Notify not implemented")
 }
 func (UnimplementedUniversityManagementServiceServer) mustEmbedUnimplementedUniversityManagementServiceServer() {
 }
@@ -245,6 +259,24 @@ func _UniversityManagementService_GetLogoutForStudent_Handler(srv interface{}, c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UniversityManagementService_Notify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLoginNotifyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UniversityManagementServiceServer).Notify(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/university_management.UniversityManagementService/Notify",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UniversityManagementServiceServer).Notify(ctx, req.(*GetLoginNotifyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UniversityManagementService_ServiceDesc is the grpc.ServiceDesc for UniversityManagementService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -275,6 +307,10 @@ var UniversityManagementService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLogoutForStudent",
 			Handler:    _UniversityManagementService_GetLogoutForStudent_Handler,
+		},
+		{
+			MethodName: "Notify",
+			Handler:    _UniversityManagementService_Notify_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
