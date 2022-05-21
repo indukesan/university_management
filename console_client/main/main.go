@@ -47,7 +47,7 @@ func main() {
 	}
 	log.Println(staffsForStudentResponse)
 
-	var studentId int32 = 6
+	var studentId int32 = 3
 	loginResponse, err := client.GetLoginForStudent(context.TODO(), &university_management.GetRequestForLogin{StudentId: studentId})
 	if err != nil {
 		log.Fatalf("Error occured while fetching login for student %d,err: %+v", 5, err)
@@ -55,10 +55,10 @@ func main() {
 	log.Println(loginResponse)
 
 	attendance := university_management.Attendance{
-		Id:        32,
+		Id:        7,
 		StudentId: studentId,
 		LoginTime: loginResponse.GetLoginTime(),
-		// LoginTime: "2022-05-18T07:04:19.301082Z",
+		// LoginTime:  "2022-05-20T11:28:49.388646Z",
 		LogoutTime: "",
 	}
 	logoutResponse, err := client.GetLogoutForStudent(context.TODO(), &university_management.GetRequestForLogout{Attendance: &attendance})
@@ -67,9 +67,12 @@ func main() {
 	}
 	log.Println(logoutResponse)
 
-	notifyResponse, err := client.Notify(context.TODO(), &university_management.GetLoginNotifyRequest{StudentIds: []int32{1, 2, 5, 4}})
+	notifyResponse, err := client.Notify(context.TODO(), &university_management.GetLoginNotifyRequest{StudentIds: []int32{}})
 	if err != nil {
 		log.Fatalf("Error occured while getting login notification for student,err: %+v", err)
 	}
 	log.Println(notifyResponse)
+
+	attendanceResponse, err := client.GetAttendances(context.TODO(), &university_management.GetRequestForAttendance{})
+	log.Println("new", attendanceResponse)
 }

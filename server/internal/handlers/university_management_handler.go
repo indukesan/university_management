@@ -122,6 +122,9 @@ func (u *universityManagementServer) GetLoginForStudent(ctx context.Context, req
 
 	var loginTime string
 	rows, err := connection.GetSession().InsertInto("attendances").Columns("student_id", "login_time", "logout_time").Values(request.GetStudentId(), time.Now().UTC(), nil).Exec()
+	// if rows != nil {
+	// 	channel <- fmt.Sprintf("%d has logged in!", request.GetStudentId())
+	// }
 	if err != nil {
 		log.Fatalf("Error while inserting into attendances table %+v", err)
 	}
@@ -158,9 +161,12 @@ func NewUniversityManagementHandler(connectionmanager connection.DatabaseConnect
 	}
 }
 
+var channel = make(chan string)
+var attChannel = make(chan []*um.Attendance)
+
 func (u *universityManagementServer) Notify(ctx context.Context, request *um.GetLoginNotifyRequest) (*um.GetLoginNotifyResponse, error) {
 
-	var channel = make(chan string)
+	// var channel = make(chan string)
 	go func() {
 		connection, err := u.connectionManager.GetConnection()
 
@@ -185,7 +191,7 @@ func (u *universityManagementServer) Notify(ctx context.Context, request *um.Get
 			}
 		}
 	}()
-
+	// res := &um.GetLoginNotifyResponse{Message: <-channel}
 	return &um.GetLoginNotifyResponse{Message: <-channel}, nil
 }
 
@@ -207,4 +213,36 @@ func getIds(ids []int32) string {
 	}
 	buf.WriteString(")")
 	return buf.String()
+}
+
+func (u *universityManagementServer) GetAttendances(ctx context.Context, request *um.GetRequestForAttendance) (*um.GetResponseForAttendance, error) {
+
+	connection, err := u.connectionManager.GetConnection()
+
+	if err != nil {
+		log.Fatalf("Error: %+v", err)
+	}
+
+	var tempAttendances []*um.Attendance
+	connection.GetSession().Select("*").From("attendances").Load(&tempAttendances)
+
+	var attendances []*um.Attendance
+	for _, attendance := range tempAttendances {
+		attendances = append(attendances, attendance)
+	}
+	attChannel <- attendances
+	return &um.GetResponseForAttendance{Attendance: attendances}, nil
+}
+
+func (u *universityManagementServer) StreamAttendanceResponse(request *um.GetRequestForStreamingAttendance, stream um.UniversityManagementService_StreamAttendanceResponseServer) error {
+
+	fmt.Printf("StreamAttendanceResponse function was invoked with %v\n", request)
+	for {
+		res := &um.GetResponseForStreamingAttendance{
+			Attendance: <-attChannel,
+		}
+		stream.Send(res)
+		log.Printf("Sent: %v", res)
+		time.Sleep(1000 * time.Millisecond)
+	}
 }

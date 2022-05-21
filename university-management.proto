@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-//import "google/protobuf/struct.proto";
+// import "google/protobuf/struct.proto";
 // import "google/protobuf/timestamp.proto";
+// import "google/protobuf/empty.proto";
 package university_management;
 
 option go_package = "/university_management";
@@ -85,6 +86,20 @@ message GetLoginNotifyResponse{
   string message = 1;
 }
 
+message GetRequestForStreamingAttendance {
+}
+
+message GetResponseForStreamingAttendance {
+  repeated Attendance attendance = 1;
+}
+
+message GetRequestForAttendance {
+}
+
+message GetResponseForAttendance {
+  repeated Attendance attendance = 1;
+}
+
 service UniversityManagementService {
   rpc GetDepartment (GetDepartmentRequest) returns (GetDepartmentResponse) {
   }
@@ -106,4 +121,10 @@ service UniversityManagementService {
 
   rpc Notify(GetLoginNotifyRequest) returns (GetLoginNotifyResponse) {
   }
+
+  rpc StreamAttendanceResponse (GetRequestForStreamingAttendance) returns (stream GetResponseForStreamingAttendance) {
+  }
+
+  rpc GetAttendances(GetRequestForAttendance) returns (GetResponseForAttendance) {}
+
 }
